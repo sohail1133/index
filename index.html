@@ -138,9 +138,16 @@
         // Load Dashboard after successful login
         function loadDashboard() {
             const username = localStorage.getItem('currentUser');
+            if (!username) {
+                return;
+            }
+            
             const user = users.find(u => u.username === username);
+            if (!user) {
+                return;
+            }
+            
             currentUser = user;
-
             document.getElementById('user-name').textContent = currentUser.username;
 
             // Display saved details and files
@@ -204,7 +211,7 @@
                 fileElement.classList.add('file-item');
                 fileElement.innerHTML = `
                     <p><strong>${file.name}</strong></p>
-                    ${file.name.endsWith('.pdf') ? <a href="${file.data}" target="_blank">View PDF</a> : <img src="${file.data}" width="100">}
+                    ${file.name.endsWith('.pdf') ? `<a href="${file.data}" target="_blank">View PDF</a>` : `<img src="${file.data}" width="100">`}
                     <button onclick="deleteFile(${index})">Delete</button>
                 `;
                 savedFiles.appendChild(fileElement);
@@ -221,6 +228,7 @@
         // Logout user
         function logout() {
             localStorage.removeItem('currentUser');
+            currentUser = null;
             document.getElementById('dashboard').classList.add('hidden');
             document.getElementById('auth-form').classList.remove('hidden');
         }
